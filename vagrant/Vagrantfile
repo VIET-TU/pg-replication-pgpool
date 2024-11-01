@@ -1,0 +1,83 @@
+Vagrant.configure("2") do |config|
+    config.vm.define "ansible" do |ansible|
+      ansible.vm.provider "virtualbox" do |vb_ansible|
+        vb_ansible.memory = 2048
+        vb_ansible.cpus = 2
+      end
+  
+      ansible.vm.box = "bento/ubuntu-20.04"
+      ansible.vm.hostname = "ansible"
+      ansible.vm.network "private_network", ip: "192.168.56.10"
+  
+      ansible.vm.provision "shell", inline: <<-SHELL
+        apt update
+        apt -y install openssh-server
+        ufw allow ssh
+        ufw --force enable
+  
+        echo 'root:viettu' | chpasswd
+        sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+        systemctl reload sshd
+      SHELL
+  
+    end
+  
+    config.vm.define "master" do |master|
+      master.vm.provider "virtualbox" do |vb_master|
+        vb_master.memory = 2048
+        vb_master.cpus = 2
+      end
+  
+      master.vm.box = "bento/ubuntu-20.04"
+      master.vm.hostname = "postgresql-master"
+      master.vm.network "private_network", ip: "192.168.56.11"
+  
+      master.vm.provision "shell", inline: <<-SHELL
+  
+        echo 'root:viettu' | chpasswd
+        sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+        systemctl reload sshd
+      SHELL
+  
+    end
+  
+    config.vm.define "slave1" do |slave1|
+      slave1.vm.provider "virtualbox" do |vb_slave1|
+        vb_slave1.memory = 2048
+        vb_slave1.cpus = 2
+      end
+  
+      slave1.vm.box = "bento/ubuntu-20.04"
+      slave1.vm.hostname = "postgresql-slave-1"
+      slave1.vm.network "private_network", ip: "192.168.56.12"
+  
+      slave1.vm.provision "shell", inline: <<-SHELL
+  
+        echo 'root:viettu' | chpasswd
+        sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+        systemctl reload sshd
+      SHELL
+  
+    end
+  
+    config.vm.define "slave2" do |slave2|
+      slave2.vm.provider "virtualbox" do |vb_slave2|
+        vb_slave2.memory = 2048
+        vb_slave2.cpus = 2
+      end
+  
+      slave2.vm.box = "bento/ubuntu-20.04"
+      slave2.vm.hostname = "postgresql-slave-2"
+      slave2.vm.network "private_network", ip: "192.168.56.13"
+  
+      slave2.vm.provision "shell", inline: <<-SHELL
+  
+        echo 'root:viettu' | chpasswd
+        sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+        systemctl reload sshd
+      SHELL
+  
+    end
+  
+  end
+  

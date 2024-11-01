@@ -1,0 +1,21 @@
+version: "3.3"
+services:
+  pgpool:
+    image: bitnami/pgpool:4
+    ports:
+      - 5432:5432
+    environment:
+      - PGPOOL_BACKEND_NODES=0:192.168.56.11:5432,1:192.168.56.12:5432,2:192.168.56.13:5432
+      - PGPOOL_SR_CHECK_USER=nobody
+      - PGPOOL_SR_CHECK_PASSWORD=2612
+      - PGPOOL_ENABLE_LDAP=no
+      - PGPOOL_POSTGRES_USERNAME=postgres
+      - PGPOOL_POSTGRES_PASSWORD=postgres
+      - PGPOOL_ADMIN_USERNAME=postgres
+      - PGPOOL_ADMIN_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+#  psql -h 192.168.56.10 -p 5432 -U postgres -d postgres
